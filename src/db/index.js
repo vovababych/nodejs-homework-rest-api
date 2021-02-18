@@ -7,6 +7,6 @@ const adapter = new FileSync(
 );
 const db = low(adapter);
 
-// db.defaults({ contacts: [] }).write();
+db.defaults({ contacts: [] }).write();
 
 module.exports = db;

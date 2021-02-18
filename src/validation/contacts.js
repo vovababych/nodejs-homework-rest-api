@@ -3,7 +3,8 @@ const { HttpCode } = require('../helpers/constants');
 
 const schemaCreateContact = Joi.object({
   name: Joi.string().alphanum().min(3).max(30).required(),
-  phone: Joi.number().integer().required(),
+  // phone: Joi.number().integer().required(),
+  phone: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
@@ -36,10 +37,10 @@ const validate = (schema, body, next) => {
   next();
 };
 
-module.exports.validateCreateContact = (req, res, next) => {
+module.exports.validateCreateContact = (req, _res, next) => {
   return validate(schemaCreateContact, req.body, next);
 };
 
-module.exports.validateUpdateContact = (req, res, next) => {
+module.exports.validateUpdateContact = (req, _res, next) => {
   return validate(schemaUpdateContact, req.body, next);
 };
