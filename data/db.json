@@ -1,22 +1,10 @@
 {
   "contacts": [
     {
-      "id": "89948e6d-d2f9-408e-9ab8-4d989d60ec00",
-      "name": "Djdrth",
-      "email": "dvsv@gmail.com",
-      "phone": "222111235"
-    },
-    {
-      "id": "1a46662d-dd20-425c-86fe-5f6419ce0088",
-      "name": "dvsv",
-      "email": "dssds@gmail.com",
-      "phone": "21232"
-    },
-    {
-      "id": "f09813a3-b5d3-4592-8344-001fa9c2d6e1",
-      "name": "dsfs",
-      "email": "dsdfsfssds@gmail.com",
-      "phone": "1234567890"
+      "id": "87a1e12c-9ad7-4c0c-9384-1442c290a0d1",
+      "name": "Kolya",
+      "email": "Kolya@gmail.com",
+      "phone": "1231231255"
     }
   ]
 }

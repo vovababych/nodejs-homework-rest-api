@@ -1,10 +1,13 @@
 const Joi = require('joi');
 const { HttpCode } = require('../helpers/constants');
+const db = require('../db');
 
 const schemaCreateContact = Joi.object({
-  name: Joi.string().alphanum().min(3).max(30).required(),
-  // phone: Joi.number().integer().required(),
-  phone: Joi.string().pattern(new RegExp('^[0-9]{10}$')).required(),
+  name: Joi.string().min(3).max(30).required(),
+  phone: Joi.string()
+    .length(10)
+    .pattern(/^[0-9]{10}$/)
+    .required(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
@@ -14,8 +17,11 @@ const schemaCreateContact = Joi.object({
 });
 
 const schemaUpdateContact = Joi.object({
-  name: Joi.string().alphanum().min(3).max(30).optional(),
-  phone: Joi.number().integer().optional(),
+  name: Joi.string().min(3).max(30).optional(),
+  phone: Joi.string()
+    .length(10)
+    .pattern(/^[0-9]{10}$/)
+    .optional(),
   email: Joi.string()
     .email({
       minDomainSegments: 2,
@@ -43,4 +49,29 @@ module.exports.validateCreateContact = (req, _res, next) => {
 
 module.exports.validateUpdateContact = (req, _res, next) => {
   return validate(schemaUpdateContact, req.body, next);
+};
+
+module.exports.validateUniqContact = (req, _res, next) => {
+  const { name, email, phone } = req.body;
+
+  try {
+    const contacts = db.get('contacts').value();
+    const isExistsContact = contacts.find(
+      contact =>
+        contact.name === name ||
+        contact.email === email ||
+        contact.phone === phone,
+    );
+
+    if (isExistsContact) {
+      return next({
+        status: HttpCode.BAD_REQUEST,
+        message: `Контакт с такими данными уже существует`,
+        data: isExistsContact,
+      });
+    }
+    next();
+  } catch (e) {
+    next(e);
+  }
 };

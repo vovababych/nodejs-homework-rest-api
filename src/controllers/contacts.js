@@ -2,12 +2,15 @@ const { HttpCode } = require('../helpers/constants');
 const { ContactsService } = require('../services');
 const contactsService = new ContactsService();
 
-const getAll = (req, res, next) => {
+const getAll = (_req, res, next) => {
   try {
     const contacts = contactsService.getAll();
+    const message =
+      contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
     res.status(HttpCode.OK).json({
       status: 'success',
       code: HttpCode.OK,
+      message,
       data: {
         contacts,
       },
@@ -16,6 +19,7 @@ const getAll = (req, res, next) => {
     next(e);
   }
 };
+
 const getById = (req, res, next) => {
   try {
     const contact = contactsService.getById(req.params);
@@ -23,6 +27,7 @@ const getById = (req, res, next) => {
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
+        message: 'Сontact found',
         data: {
           contact,
         },
@@ -38,12 +43,14 @@ const getById = (req, res, next) => {
     next(e);
   }
 };
+
 const create = (req, res, next) => {
   try {
     const contact = contactsService.create(req.body);
     res.status(HttpCode.CREATED).json({
-      status: 'success',
+      status: 'created',
       code: HttpCode.CREATED,
+      message: 'Сontact created',
       data: {
         contact,
       },
@@ -52,6 +59,7 @@ const create = (req, res, next) => {
     next(e);
   }
 };
+
 const update = (req, res, next) => {
   try {
     const contact = contactsService.update(req.params, req.body);
@@ -59,6 +67,7 @@ const update = (req, res, next) => {
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
+        message: 'Сontact update',
         data: {
           contact,
         },
@@ -74,13 +83,16 @@ const update = (req, res, next) => {
     next(e);
   }
 };
+
 const remove = (req, res, next) => {
   try {
     const contact = contactsService.remove(req.params);
+    console.log(req.params);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
+        message: 'Сontact deleted',
         data: {
           contact,
         },
