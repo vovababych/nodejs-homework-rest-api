@@ -27,7 +27,6 @@ const schemaUpdateContact = Joi.object({
       minDomainSegments: 2,
       tlds: { allow: ['com', 'net'] },
     })
-
     .optional(),
 }).min(1);
 
