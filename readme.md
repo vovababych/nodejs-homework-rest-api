@@ -1,4 +1,4 @@
-**Читать на других языках: [Русский](README.md), [Українська](README.ua.md).**
+**Читать на других языках: [Русский](readme.md), [Українська](README.ua.md).**
 
 ## GoIT Node.js Course Template Homework
 

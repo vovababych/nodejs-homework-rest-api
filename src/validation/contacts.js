@@ -27,8 +27,9 @@ const schemaUpdateContact = Joi.object({
       minDomainSegments: 2,
       tlds: { allow: ['com', 'net'] },
     })
+
     .optional(),
-});
+}).min(1);
 
 const validate = (schema, body, next) => {
   const { error } = schema.validate(body);
