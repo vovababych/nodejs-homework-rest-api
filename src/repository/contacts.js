@@ -1,35 +1,45 @@
-const { v4: uuid } = require('uuid');
-const db = require('../db');
+const { ObjectID } = require('mongodb');
 
 class ContactsRepository {
-  getAll() {
-    return db.get('contacts').value();
+  constructor(client) {
+    this.collection = client.db().collection('contacts');
   }
 
-  getById(id) {
-    return db.get('contacts').find({ id }).value();
+  async getAll() {
+    const results = await this.collection.find({}).toArray();
+    console.log('results', results);
+    return results;
   }
 
-  create(body) {
-    const id = uuid();
+  async getById(id) {
+    const objectId = ObjectID(id);
+    const [result] = await this.collection.find({ _id: objectId }).toArray();
+    return result;
+  }
+
+  async create(body) {
     const record = {
-      id,
       ...body,
     };
-    db.get('contacts').push(record).write();
-    return record;
+    const {
+      ops: [result],
+    } = await this.collection.insertOne(record);
+    return result;
+
+    // db.get('contacts').push(record).write();
+    // return record;
   }
 
-  update(id, body) {
-    console.log('id', id);
-    const record = db.get('contacts').find({ id }).assign(body).value();
-    db.write();
-    return record.id ? record : null;
+  async update(id, body) {
+    // console.log('id', id);
+    // const record = db.get('contacts').find({ id }).assign(body).value();
+    // db.write();
+    // return record.id ? record : null;
   }
 
-  remove(id) {
-    const [record] = db.get('contacts').remove({ id }).write();
-    return record;
+  async remove(id) {
+    //   const [record] = db.get('contacts').remove({ id }).write();
+    //   return record;
   }
 }
 

@@ -2,9 +2,10 @@ const { HttpCode } = require('../helpers/constants');
 const { ContactsService } = require('../services');
 const contactsService = new ContactsService();
 
-const getAll = (_req, res, next) => {
+const getAll = async (_req, res, next) => {
   try {
-    const contacts = contactsService.getAll();
+    const contacts = await contactsService.getAll();
+    console.log('contacts', contacts);
     const message =
       contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
     res.status(HttpCode.OK).json({
@@ -20,9 +21,9 @@ const getAll = (_req, res, next) => {
   }
 };
 
-const getById = (req, res, next) => {
+const getById = async (req, res, next) => {
   try {
-    const contact = contactsService.getById(req.params);
+    const contact = await contactsService.getById(req.params);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -44,9 +45,9 @@ const getById = (req, res, next) => {
   }
 };
 
-const create = (req, res, next) => {
+const create = async (req, res, next) => {
   try {
-    const contact = contactsService.create(req.body);
+    const contact = await contactsService.create(req.body);
     res.status(HttpCode.CREATED).json({
       status: 'created',
       code: HttpCode.CREATED,
@@ -60,9 +61,9 @@ const create = (req, res, next) => {
   }
 };
 
-const update = (req, res, next) => {
+const update = async (req, res, next) => {
   try {
-    const contact = contactsService.update(req.params, req.body);
+    const contact = await contactsService.update(req.params, req.body);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -84,9 +85,9 @@ const update = (req, res, next) => {
   }
 };
 
-const remove = (req, res, next) => {
+const remove = async (req, res, next) => {
   try {
-    const contact = contactsService.remove(req.params);
+    const contact = await contactsService.remove(req.params);
     console.log(req.params);
     if (contact) {
       return res.status(HttpCode.OK).json({
