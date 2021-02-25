@@ -51,11 +51,13 @@ module.exports.validateUpdateContact = (req, _res, next) => {
   return validate(schemaUpdateContact, req.body, next);
 };
 
-module.exports.validateUniqContact = (req, _res, next) => {
+module.exports.validateUniqContact = async (req, _res, next) => {
   const { name, email, phone } = req.body;
 
   try {
-    const contacts = db.get('contacts').value();
+    const client = await db;
+    const collection = await client.db().collection('contacts');
+    const contacts = await collection.find({}).toArray();
     const isExistsContact = contacts.find(
       contact =>
         contact.name === name ||

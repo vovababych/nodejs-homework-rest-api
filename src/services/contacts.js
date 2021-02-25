@@ -1,5 +1,5 @@
 const { ContactsRepository } = require('../repository');
-const db = require('../db/index');
+const db = require('../db');
 
 class ContactsService {
   constructor() {

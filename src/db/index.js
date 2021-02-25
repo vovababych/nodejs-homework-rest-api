@@ -1,4 +1,4 @@
-const MongoClient = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
 require('dotenv').config();
 const uriDb = process.env.URI_DB;
 
@@ -11,7 +11,7 @@ process.on('SIGINT', async () => {
   const client = await db;
   client.close();
   console.log('Connection for DB disconnected and app terminated');
-  process.exit();
+  process.exit(1);
 });
 
 module.exports = db;

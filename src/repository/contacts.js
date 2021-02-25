@@ -7,12 +7,12 @@ class ContactsRepository {
 
   async getAll() {
     const results = await this.collection.find({}).toArray();
-    console.log('results', results);
     return results;
   }
 
   async getById(id) {
-    const objectId = ObjectID(id);
+    const objectId = new ObjectID(id);
+    console.log(objectId.getTimestamp());
     const [result] = await this.collection.find({ _id: objectId }).toArray();
     return result;
   }
@@ -25,21 +25,26 @@ class ContactsRepository {
       ops: [result],
     } = await this.collection.insertOne(record);
     return result;
-
-    // db.get('contacts').push(record).write();
-    // return record;
   }
 
   async update(id, body) {
-    // console.log('id', id);
-    // const record = db.get('contacts').find({ id }).assign(body).value();
-    // db.write();
-    // return record.id ? record : null;
+    const objectId = new ObjectID(id);
+    const { value: result } = await this.collection.findOneAndUpdate(
+      { _id: objectId },
+      { $set: body },
+      { returnOriginal: false },
+    );
+
+    return result;
   }
 
   async remove(id) {
-    //   const [record] = db.get('contacts').remove({ id }).write();
-    //   return record;
+    const objectId = new ObjectID(id);
+    const { value: result } = await this.collection.findOneAndDelete({
+      _id: objectId,
+    });
+
+    return result;
   }
 }
 
