@@ -5,7 +5,6 @@ const contactsService = new ContactsService();
 const getAll = async (_req, res, next) => {
   try {
     const contacts = await contactsService.getAll();
-    console.log('contacts', contacts);
     const message =
       contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
     res.status(HttpCode.OK).json({
