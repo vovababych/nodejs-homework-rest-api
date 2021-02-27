@@ -4,19 +4,21 @@ const router = express.Router();
 const {
   validateCreateContact,
   validateUpdateContact,
-  validateUniqContact,
+  validateId,
 } = require('../../validation/contacts');
 
 router
   .get('/', controllerContacts.getAll)
-  .get('/:contactId', controllerContacts.getById)
-  .post(
-    '/',
-    validateCreateContact,
-    validateUniqContact,
-    controllerContacts.create,
+  .post('/', validateCreateContact, controllerContacts.create);
+
+router
+  .get('/:contactId', validateId, controllerContacts.getById)
+  .patch(
+    '/:contactId',
+    validateId,
+    validateUpdateContact,
+    controllerContacts.update,
   )
-  .patch('/:contactId', validateUpdateContact, controllerContacts.update)
-  .delete('/:contactId', controllerContacts.remove);
+  .delete('/:contactId', validateId, controllerContacts.remove);
 
 module.exports = router;

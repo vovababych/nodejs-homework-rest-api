@@ -1,36 +1,94 @@
-const { v4: uuid } = require('uuid');
-const db = require('../db');
-
 class ContactsRepository {
-  getAll() {
-    return db.get('contacts').value();
+  constructor(ContactModel) {
+    this.model = ContactModel;
   }
 
-  getById(id) {
-    return db.get('contacts').find({ id }).value();
+  async getAll() {
+    const results = await this.model.find({});
+    return results;
   }
 
-  create(body) {
-    const id = uuid();
-    const record = {
-      id,
-      ...body,
-    };
-    db.get('contacts').push(record).write();
-    return record;
+  async getById(id) {
+    // const [result] = await this.model.find({ _id: id });
+    const result = await this.model.findOne({ _id: id });
+    return result;
   }
 
-  update(id, body) {
-    console.log('id', id);
-    const record = db.get('contacts').find({ id }).assign(body).value();
-    db.write();
-    return record.id ? record : null;
+  async create(body) {
+    const result = await this.model.create(body);
+    return result;
   }
 
-  remove(id) {
-    const [record] = db.get('contacts').remove({ id }).write();
-    return record;
+  async update(id, body) {
+    const result = await this.model.findByIdAndUpdate(
+      { _id: id },
+      { ...body },
+      { new: true },
+    );
+    return result;
+  }
+
+  async remove(id) {
+    const result = await this.model.findByIdAndRemove({
+      _id: id,
+    });
+
+    return result;
   }
 }
 
 module.exports = ContactsRepository;
+
+// ---------------------mongoose---------------------
+
+// const { ObjectID } = require('mongodb');
+
+// class ContactsRepository {
+//   constructor(client) {
+//     this.collection = client.db().collection('contacts');
+//   }
+
+//   async getAll() {
+//     const results = await this.collection.find({}).toArray();
+//     return results;
+//   }
+
+//   async getById(id) {
+//     const objectId = new ObjectID(id);
+//     console.log(objectId.getTimestamp());
+//     const [result] = await this.collection.find({ _id: objectId }).toArray();
+//     return result;
+//   }
+
+//   async create(body) {
+//     const record = {
+//       ...body,
+//     };
+//     const {
+//       ops: [result],
+//     } = await this.collection.insertOne(record);
+//     return result;
+//   }
+
+//   async update(id, body) {
+//     const objectId = new ObjectID(id);
+//     const { value: result } = await this.collection.findOneAndUpdate(
+//       { _id: objectId },
+//       { $set: body },
+//       { returnOriginal: false },
+//     );
+
+//     return result;
+//   }
+
+//   async remove(id) {
+//     const objectId = new ObjectID(id);
+//     const { value: result } = await this.collection.findOneAndDelete({
+//       _id: objectId,
+//     });
+
+//     return result;
+//   }
+// }
+
+// module.exports = ContactsRepository;
