@@ -20,8 +20,9 @@ class ContactsRepository {
   }
 
   async update(id, body) {
+    // const result = await this.model.findOneAndUpdate( { _id: id }, {...body}, { new: true }) {
     const result = await this.model.findByIdAndUpdate(
-      { _id: id },
+      id,
       { ...body },
       { new: true },
     );
@@ -29,9 +30,7 @@ class ContactsRepository {
   }
 
   async remove(id) {
-    const result = await this.model.findByIdAndRemove({
-      _id: id,
-    });
+    const result = await this.model.findByIdAndRemove(id);
 
     return result;
   }
@@ -39,7 +38,7 @@ class ContactsRepository {
 
 module.exports = ContactsRepository;
 
-// ---------------------mongoose---------------------
+// ---------------------mongodb---------------------
 
 // const { ObjectID } = require('mongodb');
 
