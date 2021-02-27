@@ -1,26 +1,26 @@
 class ContactsRepository {
-  constructor(schema) {
-    this.schema = schema;
+  constructor(ContactModel) {
+    this.model = ContactModel;
   }
 
   async getAll() {
-    const results = await this.schema.find({});
+    const results = await this.model.find({});
     return results;
   }
 
   async getById(id) {
-    // const [result] = await this.schema.find({ _id: id });
-    const result = await this.schema.findOne({ _id: id });
+    // const [result] = await this.model.find({ _id: id });
+    const result = await this.model.findOne({ _id: id });
     return result;
   }
 
   async create(body) {
-    const result = await this.schema.create(body);
+    const result = await this.model.create(body);
     return result;
   }
 
   async update(id, body) {
-    const result = await this.schema.findByIdAndUpdate(
+    const result = await this.model.findByIdAndUpdate(
       { _id: id },
       { ...body },
       { new: true },
@@ -29,7 +29,7 @@ class ContactsRepository {
   }
 
   async remove(id) {
-    const result = await this.schema.findByIdAndRemove({
+    const result = await this.model.findByIdAndRemove({
       _id: id,
     });
 

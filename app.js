@@ -1,15 +1,23 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 
 const contactsRouter = require('./src/api/contacts/index');
 const { HttpCode } = require('./src/helpers/constants');
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, 'access.log'),
+  { flags: 'a' },
+);
 
 const app = express();
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
 app.use(logger(formatsLogger));
+app.use(logger('combined', { stream: accessLogStream }));
 app.use(cors());
 app.use(express.json());
 

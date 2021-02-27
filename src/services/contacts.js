@@ -1,20 +1,17 @@
 const { ContactsRepository } = require('../repository');
-// const db = require('../db');
-const Contact = require('../schemas/contacts');
+const ContactModel = require('../schemas/contacts');
 
 class ContactsService {
   constructor() {
     process.nextTick(async () => {
-      // const client = await db;
       this.repository = {
-        contacts: new ContactsRepository(Contact),
+        contacts: new ContactsRepository(ContactModel),
       };
     });
   }
 
   async getAll() {
     const data = await this.repository.contacts.getAll();
-    console.log('data', data);
     return data;
   }
 
@@ -40,3 +37,25 @@ class ContactsService {
 }
 
 module.exports = ContactsService;
+
+// -------------------------mongoDb-------------------------
+
+// const { ContactsRepository } = require('../repository');
+// // const db = require('../db');
+
+// class ContactsService {
+//   constructor() {
+//     process.nextTick(async () => {
+//       const client = await db;
+//       this.repository = {
+//         contacts: new ContactsRepository(client),
+//       };
+//     });
+//   }
+// async getAll() { }
+// async getById({ contactId }) { }
+// async create(body) { }
+// async update({ contactId }, body) { }
+// async remove({ contactId }) { }
+// }
+// module.exports = ContactsService;

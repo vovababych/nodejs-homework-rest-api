@@ -87,7 +87,6 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const contact = await contactsService.remove(req.params);
-    console.log(req.params);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',

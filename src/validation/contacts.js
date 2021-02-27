@@ -1,6 +1,6 @@
+const mongoose = require('mongoose');
 const Joi = require('joi');
 const { HttpCode } = require('../helpers/constants');
-const db = require('../db');
 
 const schemaCreateContact = Joi.object({
   name: Joi.string().min(3).max(30).required(),
@@ -11,9 +11,18 @@ const schemaCreateContact = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
+      tlds: { allow: ['com', 'net', 'ru'] },
     })
     .required(),
+  subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
+  password: Joi.string().optional(),
+  token: Joi.string().optional(),
+  features: Joi.array().optional(),
+  owner: Joi.object({
+    name: Joi.string().min(2).max(30),
+    age: Joi.number().integer().min(1).max(120),
+    address: Joi.string().min(2),
+  }).optional(),
 });
 
 const schemaUpdateContact = Joi.object({
@@ -28,6 +37,11 @@ const schemaUpdateContact = Joi.object({
       tlds: { allow: ['com', 'net'] },
     })
     .optional(),
+  subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
+  password: Joi.string().optional(),
+  token: Joi.string().optional(),
+  features: Joi.array().optional(),
+  owner: Joi.object().optional(),
 }).min(1);
 
 const validate = (schema, body, next) => {
@@ -49,4 +63,17 @@ module.exports.validateCreateContact = (req, _res, next) => {
 
 module.exports.validateUpdateContact = (req, _res, next) => {
   return validate(schemaUpdateContact, req.body, next);
+};
+
+module.exports.validateId = (req, _res, next) => {
+  const { contactId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(contactId)) {
+    return next({
+      status: HttpCode.BAD_REQUEST,
+      message: 'ID is not valid',
+      data: 'Bad Requst',
+    });
+  }
+  next();
 };
