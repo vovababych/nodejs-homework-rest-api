@@ -2,9 +2,10 @@ const { HttpCode } = require('../helpers/constants');
 const { ContactsService } = require('../services');
 const contactsService = new ContactsService();
 
-const getAll = async (_req, res, next) => {
+const getAll = async (req, res, next) => {
   try {
-    const contacts = await contactsService.getAll();
+    const userId = req.user.id;
+    const contacts = await contactsService.getAll(userId);
     const message =
       contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
     res.status(HttpCode.OK).json({
@@ -22,7 +23,8 @@ const getAll = async (_req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    const contact = await contactsService.getById(req.params);
+    const userId = req.user.id;
+    const contact = await contactsService.getById(req.params, userId);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -46,7 +48,11 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const contact = await contactsService.create(req.body);
+    const userId = req.user.id;
+    const contact = await contactsService.create({
+      ...req.body,
+      owner: userId,
+    });
     res.status(HttpCode.CREATED).json({
       status: 'created',
       code: HttpCode.CREATED,
@@ -62,7 +68,8 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const contact = await contactsService.update(req.params, req.body);
+    const userId = req.user.id;
+    const contact = await contactsService.update(req.params, req.body, userId);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -86,7 +93,8 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const contact = await contactsService.remove(req.params);
+    const userId = req.user.id;
+    const contact = await contactsService.remove(req.params.id, userId);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',

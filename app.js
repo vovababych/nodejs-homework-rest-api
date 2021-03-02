@@ -4,6 +4,7 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 
+const usersRouter = require('./src/api/user/index');
 const contactsRouter = require('./src/api/contacts/index');
 const { HttpCode } = require('./src/helpers/constants');
 
@@ -21,6 +22,7 @@ app.use(logger('combined', { stream: accessLogStream }));
 app.use(cors());
 app.use(express.json());
 
+app.use('/api/users', usersRouter);
 app.use('/api/contacts', contactsRouter);
 
 app.use((_req, res, next) => {
