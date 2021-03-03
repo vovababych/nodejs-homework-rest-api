@@ -1,14 +1,17 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const UserService = require('../services');
+const { UserService, AuthService } = require('../services');
 const { HttpCode } = require('../helpers/constants');
 const SECRET_KEY = process.env.JWT_SECRET;
+
+const serviceUser = new UserService();
+const serviceAuth = new AuthService();
 
 const reg = async (req, res, next) => {
   try {
     const { email } = req.body;
-    const user = await UserService.findByEmail(email);
+    const user = await serviceUser.findByEmail(email);
     if (user) {
       return res.status(HttpCode.CONFLICT).json({
         status: 'error',
@@ -17,7 +20,7 @@ const reg = async (req, res, next) => {
         message: 'Email is already in use',
       });
     }
-    const newUser = await UserService.create(req.body);
+    const newUser = await serviceUser.create(req.body);
     return res.status(HttpCode.CREATED).json({
       status: 'success',
       code: HttpCode.CREATED,
@@ -36,25 +39,20 @@ const reg = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await UserService.findByEmail(email);
-    if (!user || !user.validPassword(password)) {
-      return res.status(HttpCode.UNAUTHORIZED).json({
-        status: 'error',
-        code: HttpCode.UNAUTHORIZED,
-        data: 'UNAUTHORIZED',
-        message: 'Invalid credentials',
+
+    const token = await serviceAuth.login({ email, password });
+    if (token) {
+      return res.status(HttpCode.OK).json({
+        status: 'success',
+        code: HttpCode.OK,
+        data: {
+          token,
+        },
       });
     }
-    const id = user._id;
-    const payload = { id };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '2h' });
-    await UserService.updateToken(id, token);
-    return res.status(HttpCode.OK).json({
-      status: 'success',
-      code: HttpCode.OK,
-      data: {
-        token,
-      },
+    next({
+      status: HttpCode.UNAUTHORIZED,
+      message: 'Invalid credentials',
     });
   } catch (e) {
     next(e);
@@ -63,8 +61,8 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
   const id = req.user.id;
-  await UserService.updateToken(id, null);
-  return res.status(HttpCode.NO_CONTENT).json({});
+  await serviceAuth.logout(id);
+  return res.status(HttpCode.NO_CONTENT).json();
 };
 
 module.exports = { reg, login, logout };

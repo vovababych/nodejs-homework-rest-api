@@ -1,13 +1,13 @@
 const express = require('express');
+const controllerUsers = require('../../controllers/users');
 const router = express.Router();
 
 // const validate = require('../../validation/user');
-const userController = require('../../controllers/users');
-// const guard = require('../../controllers/users');
+const guard = require('../../helpers/guard');
 
 router
-  .post('/register', userController.reg)
-  .post('/login', userController.login)
-  .post('/logout', userController.logout);
+  .post('/register', controllerUsers.reg)
+  .post('/login', controllerUsers.login)
+  .post('/logout', guard, controllerUsers.logout);
 
 module.exports = router;

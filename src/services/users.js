@@ -1,25 +1,26 @@
-const User = require('../schemas/user');
+const { UsersRepository } = require('../repository');
 
-const findByEmail = async email => {
-  return await User.findOne({ email });
-};
+class UserService {
+  constructor() {
+    this.repository = {
+      users: new UsersRepository(),
+    };
+  }
 
-const findById = async id => {
-  return await User.findOne({ _id: id });
-};
+  async create(body) {
+    const data = await this.repository.users.create(body);
+    return data;
+  }
 
-const create = async ({ name, email, password, sex }) => {
-  const user = new User({ name, email, password, sex });
-  return await user.save();
-};
+  async findByEmail(email) {
+    const data = await this.repository.users.findByEmail(email);
+    return data;
+  }
 
-const updateToken = async (id, token) => {
-  return await User.updateOne({ _id: id }, { token });
-};
+  async findById(id) {
+    const data = await this.repository.users.findById(id);
+    return data;
+  }
+}
 
-module.exports = {
-  findByEmail,
-  findById,
-  create,
-  updateToken,
-};
+module.exports = UserService;

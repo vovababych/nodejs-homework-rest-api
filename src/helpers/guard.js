@@ -4,8 +4,12 @@ const { HttpCode } = require('../helpers/constants');
 
 const guard = (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
-    const [_, token] = req.get('Authorization').split(' ');
-    if (!user || err || token !== user.token) {
+    // const [, token] = req.get('Authorization').split(' ');
+    if (
+      !user ||
+      err
+      // || token !== user.token
+    ) {
       return res.status(HttpCode.FORBIDDEN).json({
         status: 'error',
         code: HttpCode.FORBIDDEN,
@@ -14,6 +18,8 @@ const guard = (req, res, next) => {
       });
     }
     req.user = user;
+    // res.locals.user=user переменная на текущем запросе
+    // req.app.locals.vars - глобальная переменная
     return next();
   })(req, res, next);
 };

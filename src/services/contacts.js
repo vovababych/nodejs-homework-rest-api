@@ -20,8 +20,8 @@ class ContactsService {
     return data;
   }
 
-  async create(body) {
-    const data = await this.repository.contacts.create(body);
+  async create(body, userId) {
+    const data = await this.repository.contacts.create(body, userId);
     return data;
   }
 

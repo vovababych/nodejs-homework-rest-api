@@ -4,8 +4,8 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 
-const usersRouter = require('./src/api/user/index');
-const contactsRouter = require('./src/api/contacts/index');
+const usersRouter = require('./src/api/users');
+const contactsRouter = require('./src/api/contacts');
 const { HttpCode } = require('./src/helpers/constants');
 
 const accessLogStream = fs.createWriteStream(

@@ -6,6 +6,7 @@ const HttpCode = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  CONFLICT: 409,
   INTERNAL_SERVER_ERROR: 500,
 };
 
@@ -15,4 +16,10 @@ const Sex = {
   NONE: 'none',
 };
 
-module.exports = { HttpCode, Sex };
+const Subscription = {
+  FREE: 'free',
+  PRO: 'pro',
+  PREMIUM: 'premium',
+};
+
+module.exports = { HttpCode, Sex, Subscription };
