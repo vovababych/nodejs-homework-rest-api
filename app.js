@@ -1,12 +1,15 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
+const helmet = require('helmet'); // для безопасности
 const fs = require('fs');
 const path = require('path');
 
+const { HttpCode } = require('./src/helpers/constants');
+const { apiLimiter } = require('./src/helpers/rate-limit');
+const { helmetLimit } = require('./src/config/rate-limit.json');
 const usersRouter = require('./src/api/users');
 const contactsRouter = require('./src/api/contacts');
-const { HttpCode } = require('./src/helpers/constants');
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, 'access.log'),
@@ -16,12 +19,13 @@ const accessLogStream = fs.createWriteStream(
 const app = express();
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
-
 app.use(logger(formatsLogger));
 app.use(logger('combined', { stream: accessLogStream }));
+app.use(helmet()); // для безопасности
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: helmetLimit })); // лимит json в 10КБ
 
+app.use('/api/', apiLimiter);
 app.use('/api/users', usersRouter);
 app.use('/api/contacts', contactsRouter);
 

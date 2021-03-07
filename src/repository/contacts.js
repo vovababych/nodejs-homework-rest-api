@@ -3,91 +3,91 @@ class ContactsRepository {
     this.model = ContactModel;
   }
 
-  async getAll() {
-    const results = await this.model.find({});
-    return results;
+  async getAll(userId, { limit = 5, offset = 0, sortBy, sortByDesc, filter }) {
+    const result = await this.model.paginate(
+      { owner: userId },
+      {
+        limit,
+        offset,
+        sort: {
+          ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
+          ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
+        },
+        select: filter ? filter.split('|').join(' ') : '',
+        populate: {
+          path: 'owner',
+          select: 'name email subscription -_id',
+        },
+      },
+    );
+    return result;
   }
 
-  async getById(id) {
+  // async getAll({
+  //   limit = 5,
+  //   offset = 0,
+  //   page = 1,
+  //   sortBy,
+  //   sortByDesc,
+  //   filter,
+  // }) {
+  //   const { docs: contacts, totalDocs: total } = await this.model.paginate(
+  //     {},
+  //     {
+  //       limit,
+  //       offset,
+  //       page,
+  //       sort: {
+  //         ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
+  //         ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
+  //       },
+  //       select: filter ? filter.split('|').join(' ') : '',
+  //       populate: {
+  //         path: 'owner',
+  //         select: 'name email subscription -_id',
+  //       },
+  //     },
+  //   );
+  //   return {
+  //     contacts,
+  //     total,
+  //     limit: Number(limit),
+  //     offset: Number(offset),
+  //     page: Number(page),
+  //   };
+  // }
+
+  async getById(userId, id) {
     // const [result] = await this.model.find({ _id: id });
-    const result = await this.model.findOne({ _id: id });
+    const result = await this.model
+      .findOne({ _id: id, owner: userId })
+      .populate({
+        path: 'owner',
+        select: 'name email subscription -_id',
+      });
     return result;
   }
 
-  async create(body, userId) {
-    const result = await this.model.create({ ...body, owner: userId });
+  async create(userId, body) {
+    const result = await this.model.create({ owner: userId, ...body });
     return result;
   }
 
-  async update(id, body) {
+  async update(userId, id, body) {
     // const result = await this.model.findOneAndUpdate( { _id: id }, {...body}, { new: true }) {
     const result = await this.model.findByIdAndUpdate(
-      id,
+      { id, owner: userId },
       { ...body },
       { new: true },
     );
     return result;
   }
 
-  async remove(id) {
-    const result = await this.model.findByIdAndRemove(id);
+  async remove(userId, id) {
+    const result = await this.model.findByIdAndRemove({ id, owner: userId });
 
     return result;
   }
 }
 
 module.exports = ContactsRepository;
-
-// ---------------------mongodb---------------------
-
-// const { ObjectID } = require('mongodb');
-
-// class ContactsRepository {
-//   constructor(client) {
-//     this.collection = client.db().collection('contacts');
-//   }
-
-//   async getAll() {
-//     const results = await this.collection.find({}).toArray();
-//     return results;
-//   }
-
-//   async getById(id) {
-//     const objectId = new ObjectID(id);
-//     console.log(objectId.getTimestamp());
-//     const [result] = await this.collection.find({ _id: objectId }).toArray();
-//     return result;
-//   }
-
-//   async create(body) {
-//     const record = {
-//       ...body,
-//     };
-//     const {
-//       ops: [result],
-//     } = await this.collection.insertOne(record);
-//     return result;
-//   }
-
-//   async update(id, body) {
-//     const objectId = new ObjectID(id);
-//     const { value: result } = await this.collection.findOneAndUpdate(
-//       { _id: objectId },
-//       { $set: body },
-//       { returnOriginal: false },
-//     );
-
-//     return result;
-//   }
-
-//   async remove(id) {
-//     const objectId = new ObjectID(id);
-//     const { value: result } = await this.collection.findOneAndDelete({
-//       _id: objectId,
-//     });
-
-//     return result;
-//   }
-// }
-
-// module.exports = ContactsRepository;

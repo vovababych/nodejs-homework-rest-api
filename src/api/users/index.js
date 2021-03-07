@@ -4,10 +4,12 @@ const router = express.Router();
 
 // const validate = require('../../validation/user');
 const guard = require('../../helpers/guard');
+const { createAccountLimiter } = require('../../helpers/rate-limit');
 
 router
-  .post('/register', controllerUsers.reg)
-  .post('/login', controllerUsers.login)
-  .post('/logout', guard, controllerUsers.logout);
+  .post('/auth/register', createAccountLimiter, controllerUsers.reg)
+  .post('/auth/login', controllerUsers.login)
+  .post('/auth/logout', guard, controllerUsers.logout)
+  .get('/current', guard, controllerUsers.getUser);
 
 module.exports = router;

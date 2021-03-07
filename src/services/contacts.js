@@ -10,52 +10,41 @@ class ContactsService {
     });
   }
 
-  async getAll() {
-    const data = await this.repository.contacts.getAll();
+  async getAll(userId, query) {
+    const data = await this.repository.contacts.getAll(userId, query);
+    const { docs: contacts, totalDocs: total, limit, offset } = data;
+    return {
+      contacts,
+      total,
+      limit,
+      offset,
+    };
+  }
+
+  // async getAll(userId, query) {
+  //   const data = await this.repository.contacts.getAll(userId, query);
+  //   return data;
+  // }
+
+  async getById(userId, { contactId }) {
+    const data = await this.repository.contacts.getById(userId, contactId);
     return data;
   }
 
-  async getById({ contactId }) {
-    const data = await this.repository.contacts.getById(contactId);
+  async create(userId, body) {
+    const data = await this.repository.contacts.create(userId, body);
     return data;
   }
 
-  async create(body, userId) {
-    const data = await this.repository.contacts.create(body, userId);
+  async update(userId, { contactId }, body) {
+    const data = await this.repository.contacts.update(userId, contactId, body);
     return data;
   }
 
-  async update({ contactId }, body) {
-    const data = await this.repository.contacts.update(contactId, body);
-    return data;
-  }
-
-  async remove({ contactId }) {
-    const data = await this.repository.contacts.remove(contactId);
+  async remove(userId, { contactId }) {
+    const data = await this.repository.contacts.remove(userId, contactId);
     return data;
   }
 }
 
 module.exports = ContactsService;
-
-// -------------------------mongoDb-------------------------
-
-// const { ContactsRepository } = require('../repository');
-// // const db = require('../db');
-
-// class ContactsService {
-//   constructor() {
-//     process.nextTick(async () => {
-//       const client = await db;
-//       this.repository = {
-//         contacts: new ContactsRepository(client),
-//       };
-//     });
-//   }
-// async getAll() { }
-// async getById({ contactId }) { }
-// async create(body) { }
-// async update({ contactId }, body) { }
-// async remove({ contactId }) { }
-// }
-// module.exports = ContactsService;

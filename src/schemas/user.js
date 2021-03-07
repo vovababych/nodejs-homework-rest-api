@@ -1,8 +1,8 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, SchemaTypes } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const SALT_FACTOR = 8;
 
-const { Sex, Subscription } = require('../helpers/constants');
+const { Subscription } = require('../helpers/constants');
 
 const userSchema = new Schema(
   {
@@ -27,19 +27,13 @@ const userSchema = new Schema(
       default: 'Guest',
     },
 
-    sex: {
-      type: String,
-      enum: {
-        values: [Sex.MALE, Sex.FEMALE, Sex.NONE],
-        message: "It isn't allowed",
-      },
-      default: Sex.NONE,
-    },
-
     subscription: {
       type: String,
-      enum: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
-      default: 'free',
+      enum: {
+        values: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
+        message: "It isn't allowed",
+      },
+      default: Subscription.FREE,
     },
 
     token: {
@@ -70,6 +64,6 @@ userSchema.methods.validPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-const User = model('user', userSchema);
+const UserModel = model('user', userSchema);
 
-module.exports = User;
+module.exports = UserModel;

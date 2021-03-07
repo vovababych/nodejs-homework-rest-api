@@ -40,19 +40,20 @@ const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const token = await serviceAuth.login({ email, password });
+    const { token, user } = await serviceAuth.login({ email, password });
     if (token) {
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         data: {
           token,
+          user: { email: user.email, subscription: user.subscription },
         },
       });
     }
     next({
       status: HttpCode.UNAUTHORIZED,
-      message: 'Invalid credentials',
+      message: 'Email or password is wrong',
     });
   } catch (e) {
     next(e);
@@ -65,4 +66,12 @@ const logout = async (req, res, next) => {
   return res.status(HttpCode.NO_CONTENT).json();
 };
 
-module.exports = { reg, login, logout };
+const getUser = async (req, res, next) => {
+  res.status(HttpCode.OK).json({
+    name: req.user.name,
+    email: req.user.email,
+    subscription: req.user.subscription,
+  });
+};
+
+module.exports = { reg, login, logout, getUser };

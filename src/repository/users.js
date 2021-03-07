@@ -1,8 +1,8 @@
-const User = require('../schemas/user');
+const UserModel = require('../schemas/user');
 
 class UsersRepository {
   constructor() {
-    this.model = User;
+    this.model = UserModel;
   }
 
   async findById(id) {
@@ -17,7 +17,6 @@ class UsersRepository {
 
   async create(body) {
     const user = new this.model(body);
-    console.log('user', user);
     return user.save();
   }
 

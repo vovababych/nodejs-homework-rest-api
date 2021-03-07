@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema, model, SchemaTypes } = mongoose;
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 const contactSchema = new Schema(
   {
@@ -13,6 +14,10 @@ const contactSchema = new Schema(
       required: [true, 'Set email for contact'],
       unique: true,
     },
+    password: {
+      type: String,
+      required: [false, 'Set password for contact'],
+    },
     phone: {
       type: String,
       required: [true, 'Set phone for contact'],
@@ -21,18 +26,13 @@ const contactSchema = new Schema(
     subscription: {
       type: String,
       required: [false, 'subscription must be one of free or pro or premium'],
-      unique: false,
     },
-    password: {
-      type: String,
-      required: [false, 'Set password for contact'],
-      unique: false,
-    },
+
     token: {
       type: String,
       required: [false, 'error token'],
-      unique: false,
     },
+
     features: {
       type: Array,
       set: data => (!data ? [] : data),
@@ -46,9 +46,11 @@ const contactSchema = new Schema(
   { versionKey: false, timestamps: true },
 );
 
-contactSchema.virtual('fullname').get(function () {
-  return `${this.name}`;
-});
+// contactSchema.virtual('fullname').get(function () {
+//   return `${this.name}`;
+// });
+
+contactSchema.plugin(mongoosePaginate);
 
 const ContactModel = model('contact', contactSchema);
 

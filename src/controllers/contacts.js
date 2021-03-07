@@ -4,8 +4,8 @@ const contactsService = new ContactsService();
 
 const getAll = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const contacts = await contactsService.getAll(userId);
+    const userId = req.user.id; // В guard.js user положили в req.user
+    const contacts = await contactsService.getAll(userId, req.query);
     const message =
       contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
     res.status(HttpCode.OK).json({
@@ -13,7 +13,7 @@ const getAll = async (req, res, next) => {
       code: HttpCode.OK,
       message,
       data: {
-        contacts,
+        ...contacts,
       },
     });
   } catch (e) {
@@ -23,8 +23,8 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const contact = await contactsService.getById(req.params, userId);
+    const userId = req.user.id; // В guard.js user положили в req.user
+    const contact = await contactsService.getById(userId, req.params);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -48,11 +48,11 @@ const getById = async (req, res, next) => {
 
 const create = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id; // В guard.js user положили в req.user
     const contact = await contactsService.create(
-      req.body,
       userId,
-      // {...req.body, owner: userId}
+      req.body,
+      // {owner: userId, ...req.body }
     );
     res.status(HttpCode.CREATED).json({
       status: 'created',
@@ -69,8 +69,8 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const contact = await contactsService.update(req.params, req.body, userId);
+    const userId = req.user.id; // В guard.js user положили в req.user
+    const contact = await contactsService.update(userId, req.params, req.body);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
@@ -94,7 +94,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id; // В guard.js user положили в req.user
     const contact = await contactsService.remove(req.params.id, userId);
     if (contact) {
       return res.status(HttpCode.OK).json({
