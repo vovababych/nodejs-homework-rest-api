@@ -9,11 +9,9 @@ const schemaRegisterUser = Joi.object({
       tlds: { allow: ['com', 'net', 'ru'] },
     })
     .required(),
-  password: Joi.string().required(),
+  password: Joi.string().min(6).required(),
   name: Joi.string().min(2).max(30).optional(),
-  //   subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
-  //   features: Joi.array().optional(),
-  token: Joi.string().optional(),
+  subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
 });
 
 const schemaLoginUser = Joi.object({
@@ -23,7 +21,7 @@ const schemaLoginUser = Joi.object({
       tlds: { allow: ['com', 'net'] },
     })
     .required(),
-  password: Joi.string().required(),
+  password: Joi.string().min(6).required(),
 });
 
 const validate = (schema, body, next) => {

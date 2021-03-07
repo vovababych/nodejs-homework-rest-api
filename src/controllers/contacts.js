@@ -95,14 +95,18 @@ const update = async (req, res, next) => {
 const remove = async (req, res, next) => {
   try {
     const userId = req.user.id; // В guard.js user положили в req.user
-    const contact = await contactsService.remove(req.params.id, userId);
+    const contact = await contactsService.remove(userId, req.params.contactId);
     if (contact) {
       return res.status(HttpCode.OK).json({
         status: 'success',
         code: HttpCode.OK,
         message: 'Сontact deleted',
         data: {
-          contact,
+          contact: {
+            name: contact.name,
+            email: contact.email,
+            phone: contact.phone,
+          },
         },
       });
     } else {

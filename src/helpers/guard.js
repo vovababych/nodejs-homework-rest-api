@@ -12,7 +12,7 @@ const guard = (req, res, next) => {
 
     // const [, token] = req.get('Authorization').split(' ');
 
-    const token = req.get('Authorization').split(' ')[1]; // [0]-Bearer, [1]-token
+    const token = req.get('Authorization')?.split(' ')[1]; // [0]-Bearer, [1]-token
     if (!user || err || token !== user.token) {
       next({
         status: HttpCode.UNAUTHORIZED,

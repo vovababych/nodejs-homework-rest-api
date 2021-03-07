@@ -41,7 +41,7 @@ class ContactsService {
     return data;
   }
 
-  async remove(userId, { contactId }) {
+  async remove(userId, contactId) {
     const data = await this.repository.contacts.remove(userId, contactId);
     return data;
   }

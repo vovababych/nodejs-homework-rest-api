@@ -76,7 +76,7 @@ class ContactsRepository {
   async update(userId, id, body) {
     // const result = await this.model.findOneAndUpdate( { _id: id }, {...body}, { new: true }) {
     const result = await this.model.findByIdAndUpdate(
-      { id, owner: userId },
+      { _id: id, owner: userId },
       { ...body },
       { new: true },
     );
@@ -84,7 +84,10 @@ class ContactsRepository {
   }
 
   async remove(userId, id) {
-    const result = await this.model.findByIdAndRemove({ id, owner: userId });
+    const result = await this.model.findByIdAndRemove({
+      _id: id,
+      owner: userId,
+    });
 
     return result;
   }
