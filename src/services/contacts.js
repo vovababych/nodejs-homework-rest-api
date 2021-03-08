@@ -12,12 +12,12 @@ class ContactsService {
 
   async getAll(userId, query) {
     const data = await this.repository.contacts.getAll(userId, query);
-    const { docs: contacts, totalDocs: total, limit, offset } = data;
+    const { docs: contacts, totalDocs: total, limit, page } = data;
     return {
-      contacts,
       total,
       limit,
-      offset,
+      page,
+      contacts,
     };
   }
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { HttpCode } = require('../helpers/constants');
+const { HttpCode, Subscription } = require('../helpers/constants');
 
 const schemaCreateContact = Joi.object({
   name: Joi.string().min(3).max(30).required(),
@@ -14,6 +14,10 @@ const schemaCreateContact = Joi.object({
       tlds: { allow: ['com', 'net', 'ru'] },
     })
     .required(),
+  subscription: Joi.string()
+    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .optional(),
+  features: Joi.array().optional(),
   owner: Joi.object({
     name: Joi.string().min(2).max(30),
     age: Joi.number().integer().min(1).max(120),
@@ -33,6 +37,8 @@ const schemaUpdateContact = Joi.object({
       tlds: { allow: ['com', 'net'] },
     })
     .optional(),
+  subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
+  features: Joi.array().optional(),
   owner: Joi.object().optional(),
 }).min(1);
 

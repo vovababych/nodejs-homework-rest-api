@@ -3,62 +3,30 @@ class ContactsRepository {
     this.model = ContactModel;
   }
 
-  async getAll(userId, { limit = 5, offset = 0, sortBy, sortByDesc, filter }) {
-    const result = await this.model.paginate(
-      { owner: userId },
-      {
-        limit,
-        offset,
-        sort: {
-          ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
-          ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
-        },
-        select: filter ? filter.split('|').join(' ') : '',
-        populate: {
-          path: 'owner',
-          select: 'name email subscription -_id',
-        },
+  async getAll(userId, query) {
+    const { limit = 5, page = 1, sortBy, sortByDesc, filter, Sub } = query;
+
+    const queryBySubscription = Sub
+      ? { owner: userId, subscription: Sub }
+      : { owner: userId };
+
+    const result = await this.model.paginate(queryBySubscription, {
+      limit,
+      page,
+      sort: {
+        ...(sortBy ? { [`${sortBy}`]: 1 } : {}), // name: 1
+        ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}), // name: -1
       },
-    );
+      select: filter ? filter.split('|').join(' ') : '',
+      populate: {
+        path: 'owner',
+        select: 'name email subscription -_id',
+      },
+    });
     return result;
   }
 
-  // async getAll({
-  //   limit = 5,
-  //   offset = 0,
-  //   page = 1,
-  //   sortBy,
-  //   sortByDesc,
-  //   filter,
-  // }) {
-  //   const { docs: contacts, totalDocs: total } = await this.model.paginate(
-  //     {},
-  //     {
-  //       limit,
-  //       offset,
-  //       page,
-  //       sort: {
-  //         ...(sortBy ? { [`${sortBy}`]: 1 } : {}),
-  //         ...(sortByDesc ? { [`${sortByDesc}`]: -1 } : {}),
-  //       },
-  //       select: filter ? filter.split('|').join(' ') : '',
-  //       populate: {
-  //         path: 'owner',
-  //         select: 'name email subscription -_id',
-  //       },
-  //     },
-  //   );
-  //   return {
-  //     contacts,
-  //     total,
-  //     limit: Number(limit),
-  //     offset: Number(offset),
-  //     page: Number(page),
-  //   };
-  // }
-
   async getById(userId, id) {
-    // const [result] = await this.model.find({ _id: id });
     const result = await this.model
       .findOne({ _id: id, owner: userId })
       .populate({
@@ -74,8 +42,7 @@ class ContactsRepository {
   }
 
   async update(userId, id, body) {
-    // const result = await this.model.findOneAndUpdate( { _id: id }, {...body}, { new: true }) {
-    const result = await this.model.findByIdAndUpdate(
+    const result = await this.model.findOneAndUpdate(
       { _id: id, owner: userId },
       { ...body },
       { new: true },
@@ -84,7 +51,7 @@ class ContactsRepository {
   }
 
   async remove(userId, id) {
-    const result = await this.model.findByIdAndRemove({
+    const result = await this.model.findOneAndRemove({
       _id: id,
       owner: userId,
     });

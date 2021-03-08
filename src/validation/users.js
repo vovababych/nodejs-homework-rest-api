@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { HttpCode } = require('../helpers/constants');
+const { HttpCode, Subscription } = require('../helpers/constants');
 
 const schemaRegisterUser = Joi.object({
   email: Joi.string()
@@ -11,7 +11,9 @@ const schemaRegisterUser = Joi.object({
     .required(),
   password: Joi.string().min(6).required(),
   name: Joi.string().min(2).max(30).optional(),
-  subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
+  subscription: Joi.string()
+    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .optional(),
 });
 
 const schemaLoginUser = Joi.object({

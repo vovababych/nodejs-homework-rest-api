@@ -5,15 +5,15 @@ const contactsService = new ContactsService();
 const getAll = async (req, res, next) => {
   try {
     const userId = req.user.id; // В guard.js user положили в req.user
-    const contacts = await contactsService.getAll(userId, req.query);
+    const data = await contactsService.getAll(userId, req.query);
     const message =
-      contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
+      data.contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
     res.status(HttpCode.OK).json({
       status: 'success',
       code: HttpCode.OK,
       message,
       data: {
-        ...contacts,
+        ...data,
       },
     });
   } catch (e) {

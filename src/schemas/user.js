@@ -24,7 +24,7 @@ const userSchema = new Schema(
     name: {
       type: String,
       minlength: 2,
-      default: 'Guest',
+      default: 'Anonim',
     },
 
     subscription: {
