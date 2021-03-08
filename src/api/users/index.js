@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   validateRegisterUser,
   validateLoginUser,
+  validateUpdateSubscriptionUser,
 } = require('../../validation/users');
 
 const guard = require('../../helpers/guard');
@@ -17,7 +18,15 @@ router
     controllerUsers.reg,
   )
   .post('/auth/login', validateLoginUser, controllerUsers.login)
-  .post('/auth/logout', guard, controllerUsers.logout)
-  .get('/current', guard, controllerUsers.getUser);
+  .post('/auth/logout', guard, controllerUsers.logout);
+
+router
+  .get('/current', guard, controllerUsers.getUser)
+  .patch(
+    '/current',
+    guard,
+    validateUpdateSubscriptionUser,
+    controllerUsers.updateSubscriptionUser,
+  );
 
 module.exports = router;

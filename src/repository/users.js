@@ -23,6 +23,10 @@ class UsersRepository {
   async updateToken(id, token) {
     await this.model.updateOne({ _id: id }, { token });
   }
+
+  async updateSubscription(userId, subscription) {
+    await this.model.updateOne({ _id: userId }, { subscription });
+  }
 }
 
 module.exports = UsersRepository;

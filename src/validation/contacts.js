@@ -18,11 +18,6 @@ const schemaCreateContact = Joi.object({
     .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
     .optional(),
   features: Joi.array().optional(),
-  owner: Joi.object({
-    name: Joi.string().min(2).max(30),
-    age: Joi.number().integer().min(1).max(120),
-    address: Joi.string().min(2),
-  }).optional(),
 });
 
 const schemaUpdateContact = Joi.object({
@@ -39,7 +34,6 @@ const schemaUpdateContact = Joi.object({
     .optional(),
   subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
   features: Joi.array().optional(),
-  owner: Joi.object().optional(),
 }).min(1);
 
 const validate = (schema, body, next) => {

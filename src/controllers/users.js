@@ -1,9 +1,5 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
-
 const { UserService, AuthService } = require('../services');
 const { HttpCode } = require('../helpers/constants');
-const SECRET_KEY = process.env.JWT_SECRET;
 
 const serviceUser = new UserService();
 const serviceAuth = new AuthService();
@@ -68,10 +64,32 @@ const logout = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
   res.status(HttpCode.OK).json({
-    name: req.user.name,
-    email: req.user.email,
-    subscription: req.user.subscription,
+    status: 'success',
+    code: HttpCode.OK,
+    data: {
+      name: req.user.name,
+      email: req.user.email,
+      subscription: req.user.subscription,
+    },
   });
 };
 
-module.exports = { reg, login, logout, getUser };
+const updateSubscriptionUser = async (req, res, next) => {
+  const { subscription } = req.body;
+  const userId = req.user.id;
+  try {
+    await serviceUser.updateSubscription(userId, subscription);
+
+    res.status(HttpCode.OK).json({
+      status: 'Update subscription success',
+      code: HttpCode.OK,
+      data: {
+        subscription,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = { reg, login, logout, getUser, updateSubscriptionUser };

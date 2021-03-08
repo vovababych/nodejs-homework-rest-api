@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Joi = require('joi');
 const { HttpCode, Subscription } = require('../helpers/constants');
 
@@ -26,6 +25,12 @@ const schemaLoginUser = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const schemaUpdateSubscriptionUser = Joi.object({
+  subscription: Joi.string()
+    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .required(),
+});
+
 const validate = (schema, body, next) => {
   const { error } = schema.validate(body);
   if (error) {
@@ -44,4 +49,8 @@ module.exports.validateRegisterUser = (req, _res, next) => {
 
 module.exports.validateLoginUser = (req, _res, next) => {
   return validate(schemaLoginUser, req.body, next);
+};
+
+module.exports.validateUpdateSubscriptionUser = (req, _res, next) => {
+  return validate(schemaUpdateSubscriptionUser, req.body, next);
 };

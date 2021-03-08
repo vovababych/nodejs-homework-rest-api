@@ -1,4 +1,4 @@
-const { Schema, model, SchemaTypes } = require('mongoose');
+const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const SALT_FACTOR = 8;
 
