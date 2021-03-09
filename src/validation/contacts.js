@@ -32,7 +32,9 @@ const schemaUpdateContact = Joi.object({
       tlds: { allow: ['com', 'net'] },
     })
     .optional(),
-  subscription: Joi.string().valid('free', 'pro', 'premium').optional(),
+  subscription: Joi.string()
+    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .optional(),
   features: Joi.array().optional(),
 }).min(1);
 
