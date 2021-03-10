@@ -25,6 +25,10 @@ class UserService {
   async updateSubscription(userId, subscription) {
     await this.repository.users.updateSubscription(userId, subscription);
   }
+
+  async updateAvatar(userId, avatar) {
+    await this.repository.users.updateAvatar(userId, avatar);
+  }
 }
 
 module.exports = UserService;

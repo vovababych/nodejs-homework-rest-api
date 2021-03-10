@@ -27,6 +27,10 @@ class UsersRepository {
   async updateSubscription(userId, subscription) {
     await this.model.updateOne({ _id: userId }, { subscription });
   }
+
+  async updateAvatar(userId, avatar) {
+    await this.model.updateOne({ _id: userId }, { avatar });
+  }
 }
 
 module.exports = UsersRepository;

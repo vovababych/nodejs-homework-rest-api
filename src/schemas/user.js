@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
+const gravatar = require('gravatar');
 const SALT_FACTOR = 8;
 
 const { Subscription } = require('../helpers/constants');
@@ -34,6 +35,13 @@ const userSchema = new Schema(
         message: "It isn't allowed",
       },
       default: Subscription.FREE,
+    },
+
+    avatarURL: {
+      type: String,
+      default: function () {
+        return gravatar.url(this.email, { s: '250' }, true); // Вытягивает с gravatar.com аватарку по email, true --> https
+      },
     },
 
     token: {

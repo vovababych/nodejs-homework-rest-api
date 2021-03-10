@@ -5,7 +5,9 @@ const {
   validateRegisterUser,
   validateLoginUser,
   validateUpdateSubscriptionUser,
+  validateUploadAvatar,
 } = require('../../validation/users');
+const upload = require('../../helpers/upload');
 
 const guard = require('../../helpers/guard');
 const { createAccountLimiter } = require('../../helpers/rate-limit');
@@ -13,8 +15,7 @@ const { createAccountLimiter } = require('../../helpers/rate-limit');
 router
   .post(
     '/auth/register',
-    createAccountLimiter,
-    validateRegisterUser,
+    [createAccountLimiter, validateRegisterUser],
     controllerUsers.reg,
   )
   .post('/auth/login', validateLoginUser, controllerUsers.login)
@@ -24,9 +25,14 @@ router
   .get('/current', guard, controllerUsers.getUser)
   .patch(
     '/current',
-    guard,
-    validateUpdateSubscriptionUser,
+    [guard, validateUpdateSubscriptionUser],
     controllerUsers.updateSubscriptionUser,
   );
+
+router.patch(
+  '/avatar',
+  [guard, upload.single('avatar'), validateUploadAvatar],
+  controllerUsers.avatars,
+);
 
 module.exports = router;

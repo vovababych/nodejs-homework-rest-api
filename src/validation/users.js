@@ -13,6 +13,7 @@ const schemaRegisterUser = Joi.object({
   subscription: Joi.string()
     .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
     .optional(),
+  avatarURL: Joi.string().optional(),
 });
 
 const schemaLoginUser = Joi.object({
@@ -53,4 +54,15 @@ module.exports.validateLoginUser = (req, _res, next) => {
 
 module.exports.validateUpdateSubscriptionUser = (req, _res, next) => {
   return validate(schemaUpdateSubscriptionUser, req.body, next);
+};
+
+module.exports.validateUploadAvatar = (req, res, next) => {
+  if (!req.file) {
+    return next({
+      status: HttpCode.BAD_REQUEST,
+      message: 'Field of avatar with file not found',
+      data: 'Bad Requst',
+    });
+  }
+  next();
 };
