@@ -4,7 +4,8 @@ const router = express.Router();
 const {
   validateRegisterUser,
   validateLoginUser,
-  validateUpdateSubscriptionUser,
+  // validateUpdateSubscriptionUser,
+  validateUpdateUser,
   validateUploadAvatar,
 } = require('../../validation/users');
 const upload = require('../../helpers/upload');
@@ -23,11 +24,7 @@ router
 
 router
   .get('/current', guard, controllerUsers.getUser)
-  .patch(
-    '/current',
-    [guard, validateUpdateSubscriptionUser],
-    controllerUsers.updateSubscriptionUser,
-  );
+  .patch('/current', [guard, validateUpdateUser], controllerUsers.updateUser);
 
 router.patch(
   '/avatar',

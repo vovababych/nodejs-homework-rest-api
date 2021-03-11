@@ -32,11 +32,14 @@ const schemaLoginUser = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-const schemaUpdateSubscriptionUser = Joi.object({
+const schemaUpdateUser = Joi.object({
+  // password: Joi.string().min(6).optional(),
+  name: Joi.string().min(2).max(30).optional(),
+  sex: Joi.valid(...SEX).optional(),
   subscription: Joi.string()
     .valid(...SUBSCRIPTIONS)
-    .required(),
-});
+    .optional(),
+}).min(1);
 
 const validate = (schema, body, next) => {
   const { error } = schema.validate(body);
@@ -58,8 +61,8 @@ module.exports.validateLoginUser = (req, _res, next) => {
   return validate(schemaLoginUser, req.body, next);
 };
 
-module.exports.validateUpdateSubscriptionUser = (req, _res, next) => {
-  return validate(schemaUpdateSubscriptionUser, req.body, next);
+module.exports.validateUpdateUser = (req, _res, next) => {
+  return validate(schemaUpdateUser, req.body, next);
 };
 
 module.exports.validateUploadAvatar = (req, res, next) => {

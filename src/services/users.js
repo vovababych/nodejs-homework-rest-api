@@ -22,8 +22,9 @@ class UserService {
     return data;
   }
 
-  async updateSubscription(userId, subscription) {
-    await this.repository.users.updateSubscription(userId, subscription);
+  async updateUser(userId, body) {
+    const data = await this.repository.users.updateUser(userId, body);
+    return data;
   }
 
   async updateAvatar(userId, avatarURL) {

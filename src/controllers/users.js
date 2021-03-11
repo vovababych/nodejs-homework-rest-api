@@ -92,17 +92,21 @@ const getUser = async (req, res, next) => {
   });
 };
 
-const updateSubscriptionUser = async (req, res, next) => {
-  const { subscription } = req.body;
+const updateUser = async (req, res, next) => {
   const userId = req.user.id;
   try {
-    await serviceUser.updateSubscription(userId, subscription);
+    const user = await serviceUser.updateUser(userId, req.body);
 
     res.status(HttpCode.OK).json({
-      status: 'Update subscription success',
+      status: 'Update user data success',
       code: HttpCode.OK,
       data: {
-        subscription,
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        sex: user.sex,
+        subscription: user.subscription,
+        avatarURL: user.avatarURL,
       },
     });
   } catch (e) {
@@ -149,7 +153,6 @@ const saveAvatarToStatic = async (req, userId) => {
   );
 
   await deletePrevAvatar(req.user);
-
   return avatarURL;
 };
 
@@ -160,11 +163,12 @@ const deletePrevAvatar = async user => {
     console.log(e);
   }
 };
+
 module.exports = {
   reg,
   login,
   logout,
   getUser,
-  updateSubscriptionUser,
+  updateUser,
   avatars,
 };

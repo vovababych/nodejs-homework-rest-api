@@ -24,8 +24,13 @@ class UsersRepository {
     await this.model.updateOne({ _id: id }, { token });
   }
 
-  async updateSubscription(userId, subscription) {
-    await this.model.updateOne({ _id: userId }, { subscription });
+  async updateUser(userId, body) {
+    const result = await this.model.findOneAndUpdate(
+      { _id: userId },
+      { ...body },
+      { new: true },
+    );
+    return result;
   }
 
   async updateAvatar(userId, avatar) {
