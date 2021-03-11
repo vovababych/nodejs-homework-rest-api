@@ -29,7 +29,7 @@ class UsersRepository {
   }
 
   async updateAvatar(userId, avatar) {
-    await this.model.updateOne({ _id: userId }, { avatar });
+    await this.model.updateOne({ _id: userId }, { avatarURL: avatar });
   }
 }
 

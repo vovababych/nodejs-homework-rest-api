@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema, model, SchemaTypes } = mongoose;
 const mongoosePaginate = require('mongoose-paginate-v2');
-const { Subscription } = require('../helpers/constants');
+const { SUBSCRIPTIONS } = require('../helpers/constants');
 
 const contactSchema = new Schema(
   {
@@ -22,10 +22,10 @@ const contactSchema = new Schema(
     subscription: {
       type: String,
       enum: {
-        values: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
+        values: SUBSCRIPTIONS,
         message: "It isn't allowed",
       },
-      default: Subscription.FREE,
+      default: SUBSCRIPTIONS[0],
     },
 
     features: {

@@ -26,8 +26,8 @@ class UserService {
     await this.repository.users.updateSubscription(userId, subscription);
   }
 
-  async updateAvatar(userId, avatar) {
-    await this.repository.users.updateAvatar(userId, avatar);
+  async updateAvatar(userId, avatarURL) {
+    await this.repository.users.updateAvatar(userId, avatarURL);
   }
 }
 

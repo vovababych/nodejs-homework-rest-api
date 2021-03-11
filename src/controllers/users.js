@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 const { UserService, AuthService } = require('../services');
-const { HttpCode } = require('../helpers/constants');
+const { HttpCode, Dir } = require('../helpers/constants');
 const createFolderIsExist = require('../helpers/create-dir');
 
 const serviceUser = new UserService();
@@ -28,10 +28,11 @@ const reg = async (req, res, next) => {
       code: HttpCode.CREATED,
       data: {
         id: newUser.id,
-        email: newUser.email,
         name: newUser.name,
+        email: newUser.email,
+        sex: newUser.sex,
         subscription: newUser.subscription,
-        avatar: newUser.avatar,
+        avatarURL: newUser.avatarURL,
       },
     });
   } catch (err) {
@@ -50,7 +51,14 @@ const login = async (req, res, next) => {
         code: HttpCode.OK,
         data: {
           token,
-          user: { email: user.email, subscription: user.subscription },
+          user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            sex: user.sex,
+            subscription: user.subscription,
+            avatar: user.avatar,
+          },
         },
       });
     }
@@ -74,9 +82,12 @@ const getUser = async (req, res, next) => {
     status: 'success',
     code: HttpCode.OK,
     data: {
+      id: req.user.id,
       name: req.user.name,
       email: req.user.email,
+      sex: req.user.sex,
       subscription: req.user.subscription,
+      avatarURL: req.user.avatarURL,
     },
   });
 };
@@ -102,13 +113,13 @@ const updateSubscriptionUser = async (req, res, next) => {
 const avatars = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const avatarUrl = await saveAvatarToStatic(req, userId);
-    await serviceUser.updateAvatar(userId, avatarUrl);
+    const avatarURL = await saveAvatarToStatic(req, userId);
+    await serviceUser.updateAvatar(userId, avatarURL);
     return res.json({
       status: HttpCode.OK,
       code: HttpCode.OK,
       data: {
-        avatarUrl,
+        avatarURL,
       },
     });
   } catch (e) {
@@ -117,10 +128,7 @@ const avatars = async (req, res, next) => {
 };
 
 const saveAvatarToStatic = async (req, userId) => {
-  const PUBLIC_DIR = process.env.PUBLIC_DIR;
-  const AVATARS_OF_USERS = process.env.AVATARS_OF_USERS;
-  console.log('req.user.path', req.user);
-  const pathFile = req.file.path;
+  const pathFile = req.file.path; // tmp
   const newNameAvatar = `${Date.now()}-${req.file.originalname}`;
   const img = await Jimp.read(pathFile);
   img
@@ -129,24 +137,28 @@ const saveAvatarToStatic = async (req, userId) => {
     .writeAsync(pathFile);
 
   // В папке images создаем папку с именем "userId"
-  await createFolderIsExist(path.join(PUBLIC_DIR, AVATARS_OF_USERS, userId));
+  await createFolderIsExist(path.join(Dir.PUBLIC, Dir.AVATARS, userId));
   // Перемещаем файл из временной папки в папку images и меняем имя
   await fs.rename(
-    pathFile,
-    path.join(PUBLIC_DIR, AVATARS_OF_USERS, userId, newNameAvatar),
+    pathFile, // tmp
+    path.join(Dir.PUBLIC, Dir.AVATARS, userId, newNameAvatar), // public/images/userID/newName.jpg
   );
-  // В БД храним не саму картинку, а путь к статике (public)
-  const avatarUrl = path.normalize(
-    path.join(AVATARS_OF_USERS, userId, newNameAvatar),
+  // В БД храним не саму картинку, а путь к статике (public) /images/userID/newName.jpg
+  const avatarURL = path.normalize(
+    path.join(Dir.AVATARS, userId, newNameAvatar),
   );
 
+  await deletePrevAvatar(req.user);
+
+  return avatarURL;
+};
+
+const deletePrevAvatar = async user => {
   try {
-    // удаляем предидущий файл из папки images
-    fs.unlink(path.join(process.cwd(), PUBLIC_DIR, req.user.avatar));
+    await fs.unlink(path.join(process.cwd(), Dir.PUBLIC, user.avatarURL));
   } catch (e) {
     console.log(e);
   }
-  return avatarUrl;
 };
 module.exports = {
   reg,

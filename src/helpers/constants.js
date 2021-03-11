@@ -10,16 +10,16 @@ const HttpCode = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-const Sex = {
-  MALE: 'm',
-  FEMALE: 'f',
-  NONE: 'none',
+const DOMAINS = ['ru', 'com', 'ua'];
+
+const SEX = ['none', 'male', 'female'];
+
+const SUBSCRIPTIONS = ['free', 'pro', 'premium'];
+
+const Dir = {
+  UPLOAD: 'tmp',
+  AVATARS: 'images',
+  PUBLIC: 'public',
 };
 
-const Subscription = {
-  FREE: 'free',
-  PRO: 'pro',
-  PREMIUM: 'premium',
-};
-
-module.exports = { HttpCode, Sex, Subscription };
+module.exports = { HttpCode, Dir, SEX, SUBSCRIPTIONS, DOMAINS };

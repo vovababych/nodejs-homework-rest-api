@@ -1,17 +1,23 @@
 const Joi = require('joi');
-const { HttpCode, Subscription } = require('../helpers/constants');
+const {
+  HttpCode,
+  SUBSCRIPTIONS,
+  SEX,
+  DOMAINS,
+} = require('../helpers/constants');
 
 const schemaRegisterUser = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net', 'ru'] },
+      tlds: { allow: DOMAINS },
     })
     .required(),
   password: Joi.string().min(6).required(),
   name: Joi.string().min(2).max(30).optional(),
+  sex: Joi.valid(...SEX).optional(),
   subscription: Joi.string()
-    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .valid(...SUBSCRIPTIONS)
     .optional(),
   avatarURL: Joi.string().optional(),
 });
@@ -20,7 +26,7 @@ const schemaLoginUser = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
+      tlds: { allow: DOMAINS },
     })
     .required(),
   password: Joi.string().min(6).required(),
@@ -28,7 +34,7 @@ const schemaLoginUser = Joi.object({
 
 const schemaUpdateSubscriptionUser = Joi.object({
   subscription: Joi.string()
-    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .valid(...SUBSCRIPTIONS)
     .required(),
 });
 

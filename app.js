@@ -4,15 +4,12 @@ const cors = require('cors');
 const helmet = require('helmet'); // для безопасности
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config();
 
-const { HttpCode } = require('./src/helpers/constants');
+const { HttpCode, Dir } = require('./src/helpers/constants');
 const { apiLimiter } = require('./src/helpers/rate-limit');
 const { helmetLimit } = require('./src/config/rate-limit.json');
 const usersRouter = require('./src/api/users');
 const contactsRouter = require('./src/api/contacts');
-
-const PUBLIC_DIR = process.env.PUBLIC_DIR;
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, 'access.log'),
@@ -20,7 +17,7 @@ const accessLogStream = fs.createWriteStream(
 );
 
 const app = express();
-app.use(express.static(path.join(__dirname, PUBLIC_DIR)));
+app.use(express.static(path.join(__dirname, Dir.PUBLIC)));
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 app.use(logger(formatsLogger));

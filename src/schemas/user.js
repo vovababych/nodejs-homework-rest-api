@@ -3,14 +3,13 @@ const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
 const SALT_FACTOR = 8;
 
-const { Subscription } = require('../helpers/constants');
+const { SUBSCRIPTIONS, SEX } = require('../helpers/constants');
 
 const userSchema = new Schema(
   {
     email: {
       type: String,
       required: [true, 'Email required'],
-      unique: true,
       validate(value) {
         const re = /\S+@\S+\.\S+/;
         return re.test(String(value).toLowerCase());
@@ -28,13 +27,22 @@ const userSchema = new Schema(
       default: 'Anonim',
     },
 
+    sex: {
+      type: String,
+      enum: {
+        values: SEX,
+        message: "It isn't allowed",
+      },
+      default: SEX[0],
+    },
+
     subscription: {
       type: String,
       enum: {
-        values: [Subscription.FREE, Subscription.PRO, Subscription.PREMIUM],
+        values: SUBSCRIPTIONS,
         message: "It isn't allowed",
       },
-      default: Subscription.FREE,
+      default: SUBSCRIPTIONS[0],
     },
 
     avatarURL: {
