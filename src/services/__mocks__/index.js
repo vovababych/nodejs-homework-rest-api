@@ -1,4 +1,5 @@
-const { contacts } = require('./fake-data');
+const bcrypt = require('bcryptjs');
+const { contacts, users } = require('./fake-data');
 
 const mockGetAll = jest.fn(() => {
   return { total: contacts.length, limit: 5, page: 1, contacts };
@@ -40,15 +41,41 @@ const ContactsService = jest.fn().mockImplementation(() => {
     remove: mockRemove,
   };
 });
+
 const UserService = jest.fn().mockImplementation(() => {
   return {
-    findById: jest.fn(),
-    findByEmail: jest.fn(),
-    create: jest.fn(),
-    updateUser: jest.fn(),
-    updateAvatar: jest.fn(),
+    findById: jest.fn(id => {
+      const [user] = users.filter(el => String(el._id) === String(id));
+      return user;
+    }),
+    findByEmail: jest.fn(email => {
+      const [user] = users.filter(el => String(el.email) === String(email));
+      return user;
+    }),
+    create: jest.fn(({ name = 'Guest', email, password, sex = 'male' }) => {
+      const pass = bcrypt.hashSync(password, bcrypt.genSaltSync(10), null);
+      const newUser = {
+        name,
+        email,
+        password: pass,
+        sex,
+        _id: '604780b0a33f593b5866d7ad',
+        validPassword: function (pass) {
+          return bcrypt.compareSync(pass, this.password);
+        },
+      };
+      users.push(newUser);
+      return newUser;
+    }),
+    updateUser: jest.fn((id, token) => {
+      return {};
+    }),
+    updateAvatar: jest.fn((id, avatar, imgIdCloud) => {
+      return {};
+    }),
   };
 });
+
 const AuthService = jest.fn().mockImplementation(() => {
   return {
     login: jest.fn(),

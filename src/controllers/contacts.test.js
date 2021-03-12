@@ -110,7 +110,6 @@ describe('Unit testing contacts controllers', () => {
   test('should remove contact by wrong ID', async () => {
     req.params = { contactId: 1 };
     const result = await contacts.remove(req, res, next);
-    console.log('result', result);
     expect(next).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith({
       status: HttpCode.NOT_FOUND,
