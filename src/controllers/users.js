@@ -57,13 +57,13 @@ const login = async (req, res, next) => {
             email: user.email,
             sex: user.sex,
             subscription: user.subscription,
-            avatar: user.avatar,
+            avatarURL: user.avatarURL,
           },
         },
       });
     }
     next({
-      status: HttpCode.UNAUTHORIZED,
+      status: HttpCode.BAD_REQUEST,
       message: 'Email or password is wrong',
     });
   } catch (e) {
