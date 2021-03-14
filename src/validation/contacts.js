@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { HttpCode, Subscription } = require('../helpers/constants');
+const { HttpCode, SUBSCRIPTIONS, DOMAINS } = require('../helpers/constants');
 
 const schemaCreateContact = Joi.object({
   name: Joi.string().min(3).max(30).required(),
@@ -11,11 +11,11 @@ const schemaCreateContact = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net', 'ru'] },
+      tlds: { allow: DOMAINS },
     })
     .required(),
   subscription: Joi.string()
-    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .valid(...SUBSCRIPTIONS)
     .optional(),
   features: Joi.array().optional(),
 });
@@ -29,11 +29,11 @@ const schemaUpdateContact = Joi.object({
   email: Joi.string()
     .email({
       minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
+      tlds: { allow: DOMAINS },
     })
     .optional(),
   subscription: Joi.string()
-    .valid(Subscription.FREE, Subscription.PRO, Subscription.PREMIUM)
+    .valid(...SUBSCRIPTIONS)
     .optional(),
   features: Joi.array().optional(),
 }).min(1);
@@ -45,7 +45,7 @@ const validate = (schema, body, next) => {
     return next({
       status: HttpCode.BAD_REQUEST,
       message: `Field: ${message.replace(/"/g, '')}`,
-      data: 'Bad Requst',
+      // data: 'Bad Requst',
     });
   }
   next();

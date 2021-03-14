@@ -10,9 +10,12 @@ const guard = require('../../helpers/guard');
 
 router
   .get('/', guard, controllerContacts.getAll)
-  .post('/', guard, validateCreateContact, controllerContacts.create);
-
-router
+  .post(
+    '/',
+    guard,
+    validateCreateContact, // не проходить по тестах
+    controllerContacts.create,
+  )
   .get('/:contactId', guard, validateId, controllerContacts.getById)
   .patch(
     '/:contactId',

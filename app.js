@@ -5,7 +5,7 @@ const helmet = require('helmet'); // для безопасности
 const fs = require('fs');
 const path = require('path');
 
-const { HttpCode } = require('./src/helpers/constants');
+const { HttpCode, Dir } = require('./src/helpers/constants');
 const { apiLimiter } = require('./src/helpers/rate-limit');
 const { helmetLimit } = require('./src/config/rate-limit.json');
 const usersRouter = require('./src/api/users');
@@ -17,6 +17,7 @@ const accessLogStream = fs.createWriteStream(
 );
 
 const app = express();
+app.use(express.static(path.join(__dirname, Dir.PUBLIC)));
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 app.use(logger(formatsLogger));

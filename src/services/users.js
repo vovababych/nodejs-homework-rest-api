@@ -7,8 +7,8 @@ class UserService {
     };
   }
 
-  async create(body) {
-    const data = await this.repository.users.create(body);
+  async findById(id) {
+    const data = await this.repository.users.findById(id);
     return data;
   }
 
@@ -17,13 +17,18 @@ class UserService {
     return data;
   }
 
-  async findById(id) {
-    const data = await this.repository.users.findById(id);
+  async create(body) {
+    const data = await this.repository.users.create(body);
     return data;
   }
 
-  async updateSubscription(userId, subscription) {
-    await this.repository.users.updateSubscription(userId, subscription);
+  async updateUser(userId, body) {
+    const data = await this.repository.users.updateUser(userId, body);
+    return data;
+  }
+
+  async updateAvatar(userId, avatarURL) {
+    await this.repository.users.updateAvatar(userId, avatarURL);
   }
 }
 

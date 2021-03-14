@@ -8,7 +8,7 @@ const getAll = async (req, res, next) => {
     const data = await contactsService.getAll(userId, req.query);
     const message =
       data.contacts.length > 0 ? 'Contacts list' : 'Contacts list is empty';
-    res.status(HttpCode.OK).json({
+    return res.status(HttpCode.OK).json({
       status: 'success',
       code: HttpCode.OK,
       message,
@@ -54,7 +54,7 @@ const create = async (req, res, next) => {
       req.body,
       // {owner: userId, ...req.body }
     );
-    res.status(HttpCode.CREATED).json({
+    return res.status(HttpCode.CREATED).json({
       status: 'created',
       code: HttpCode.CREATED,
       message: 'Сontact created',
