@@ -78,7 +78,7 @@ describe('Testing the route api/contacts', () => {
   });
 
   describe('should handle post request', () => {
-    test('should return 201 status for crate contact', async done => {
+    test('should return 201 status for crate contact', async () => {
       const res = await request(app)
         .post(`/api/contacts`)
         .set('Authorization', `Bearer ${token}`)
@@ -92,10 +92,9 @@ describe('Testing the route api/contacts', () => {
       expect(res.body.data.contact.phone).toBe(newContact.phone);
       expect(res.body.data.contact.subscription).toBe(newContact.subscription);
       idNewContact = res.body.data.contact._id;
-      done();
     });
 
-    test('should return 400 status for crate contact with wrong field', async done => {
+    test('should return 400 status for crate contact with wrong field', async () => {
       const res = await request(app)
         .post(`/api/contacts`)
         .set('Authorization', `Bearer ${token}`)
@@ -104,10 +103,9 @@ describe('Testing the route api/contacts', () => {
 
       expect(res.status).toEqual(HttpCode.BAD_REQUEST);
       expect(res.body).toBeDefined();
-      done();
     });
 
-    test('should return 400 status for crate contact without required field name', async done => {
+    test('should return 400 status for crate contact without required field name', async () => {
       const res = await request(app)
         .post(`/api/contacts`)
         .set('Authorization', `Bearer ${token}`)
@@ -116,10 +114,9 @@ describe('Testing the route api/contacts', () => {
 
       expect(res.status).toEqual(HttpCode.BAD_REQUEST);
       expect(res.body).toBeDefined();
-      done();
     });
 
-    test('should return 400 status without required field phone', async done => {
+    test('should return 400 status without required field phone', async () => {
       const res = await request(app)
         .post(`/api/contacts`)
         .set('Authorization', `Bearer ${token}`)
@@ -128,10 +125,9 @@ describe('Testing the route api/contacts', () => {
 
       expect(res.status).toEqual(HttpCode.BAD_REQUEST);
       expect(res.body).toBeDefined();
-      done();
     });
 
-    test('should return 400 status without required field email', async done => {
+    test('should return 400 status without required field email', async () => {
       const res = await request(app)
         .post(`/api/contacts`)
         .set('Authorization', `Bearer ${token}`)
@@ -140,12 +136,11 @@ describe('Testing the route api/contacts', () => {
 
       expect(res.status).toEqual(HttpCode.BAD_REQUEST);
       expect(res.body).toBeDefined();
-      done();
     });
   });
 
   describe('should handle patch request', () => {
-    test('should return 200 status for update contact', async done => {
+    test('should return 200 status for update contact', async () => {
       const res = await request(app)
         .patch(`/api/contacts/${idNewContact}`)
         .set('Authorization', `Bearer ${token}`)
@@ -155,10 +150,9 @@ describe('Testing the route api/contacts', () => {
       expect(res.status).toEqual(200);
       expect(res.body).toBeDefined();
       expect(res.body.data.contact.name).toBe('UpdateName');
-      done();
     });
 
-    test('should return 400 status for update contact by wrong field', async done => {
+    test('should return 400 status for update contact by wrong field', async () => {
       const res = await request(app)
         .patch(`/api/contacts/${idNewContact}`)
         .set('Authorization', `Bearer ${token}`)
@@ -167,10 +161,9 @@ describe('Testing the route api/contacts', () => {
 
       expect(res.status).toEqual(HttpCode.BAD_REQUEST);
       expect(res.body).toBeDefined();
-      done();
     });
 
-    test('should return 400 status for update contact by noValid ID', async done => {
+    test('should return 400 status for update contact by noValid ID', async () => {
       const notValidId = 12345;
       const res = await request(app)
         .patch(`/api/contacts/${notValidId}`)
@@ -179,10 +172,9 @@ describe('Testing the route api/contacts', () => {
 
       expect(res.status).toEqual(HttpCode.BAD_REQUEST);
       expect(res.body).toBeDefined();
-      done();
     });
 
-    test('should return 404 status for update contact with noExist id', async done => {
+    test('should return 404 status for update contact with noExist id', async () => {
       const noExist = '111e111e1111111f11ed1c11';
       const res = await request(app)
         .patch(`/api/contacts/${noExist}`)
@@ -192,32 +184,29 @@ describe('Testing the route api/contacts', () => {
 
       expect(res.status).toEqual(HttpCode.NOT_FOUND);
       expect(res.body).toBeDefined();
-      done();
     });
   });
 
   describe('should handle delete request', () => {
-    test('should return 200 status for delete contact', async done => {
+    test('should return 200 status for delete contact', async () => {
       const res = await request(app)
         .delete(`/api/contacts/${idNewContact}`)
         .set('Authorization', `Bearer ${token}`)
         .set('Accept', 'application/json');
 
       expect(res.status).toEqual(200);
-      done();
     });
 
-    test('should return 400 status for delete contact by noValid ID', async done => {
+    test('should return 400 status for delete contact by noValid ID', async () => {
       const notValidId = 12345;
       const res = await request(app)
         .delete(`/api/contacts/${notValidId}`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(res.status).toEqual(HttpCode.BAD_REQUEST);
-      done();
     });
 
-    test('should return 404 status for delete contact with noExist id', async done => {
+    test('should return 404 status for delete contact with noExist id', async () => {
       const noExist = '111e111e1111111f11ed1c11';
       const res = await request(app)
         .delete(`/api/contacts/${noExist}`)
@@ -225,7 +214,6 @@ describe('Testing the route api/contacts', () => {
         .set('Accept', 'application/json');
 
       expect(res.status).toEqual(HttpCode.NOT_FOUND);
-      done();
     });
   });
 });
