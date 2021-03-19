@@ -4,9 +4,9 @@ const router = express.Router();
 const {
   validateRegisterUser,
   validateLoginUser,
-  // validateUpdateSubscriptionUser,
   validateUpdateUser,
   validateUploadAvatar,
+  verify,
 } = require('../../validation/users');
 const upload = require('../../helpers/upload');
 
@@ -19,6 +19,7 @@ router
     [createAccountLimiter, validateRegisterUser],
     controllerUsers.reg,
   )
+  .get('/auth/verify/:token', controllerUsers.verify)
   .post('/auth/login', validateLoginUser, controllerUsers.login)
   .post('/auth/logout', guard, controllerUsers.logout);
 

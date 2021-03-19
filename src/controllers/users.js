@@ -164,6 +164,28 @@ const deletePrevAvatar = async user => {
   }
 };
 
+const verify = async (req, res, next) => {
+  try {
+    const isVerify = await serviceUser.verify(req.params);
+    if (isVerify) {
+      return res.json({
+        status: 'success',
+        code: HttpCode.OK,
+        message: 'Verification successful!',
+      });
+    }
+    return res.status(HttpCode.BAD_REQUEST).json({
+      status: 'error',
+      code: HttpCode.BAD_REQUEST,
+      data: 'Bad request',
+      message:
+        'Your varification token is not valid. Contact with administration',
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   reg,
   login,
@@ -171,4 +193,5 @@ module.exports = {
   getUser,
   updateUser,
   avatars,
+  verify,
 };

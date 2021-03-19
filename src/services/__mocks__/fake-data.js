@@ -26,7 +26,7 @@ const newContact = {
 const User = {
   _id: '604780b0a33f593b5866d70d',
   name: 'TestUser',
-  email: 'test1@test.com',
+  email: 'test@test.com',
   password: '$2a$08$uS3qerS0sX82l2y9LzxfwuVyUoCpBYNW9TQwzMafzYtNdcCHZE4SO',
   sex: 'male',
   subscription: 'premium',
@@ -40,16 +40,17 @@ const users = [];
 users[0] = User;
 
 const newUser = {
-  // name: 'NewUser',
-  email: 'newuser@test.com',
+  name: 'NewUserTest',
+  email: 'newusertest@test.com',
   password: '123456',
-  // sex: 'female',
-  // subscription: 'free',
+  sex: 'female',
+  subscription: 'free',
 };
 
 module.exports = {
   contacts,
   newContact,
   User,
-  // users, newUser
+  users,
+  newUser,
 };
